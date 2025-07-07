@@ -11,7 +11,12 @@ import {
   MapPin, 
   Clock,
   BarChart3,
-  Activity
+  Activity,
+  Calendar,
+  CheckCircle2,
+  CircleDot,
+  PlayCircle,
+  XCircle
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -54,6 +59,37 @@ const regionData = [
   { name: 'Europe', value: 28, color: 'hsl(25, 95%, 53%)' },
   { name: 'Asia Pacific', value: 22, color: 'hsl(142, 76%, 36%)' },
   { name: 'Latin America', value: 15, color: 'hsl(271, 91%, 65%)' }
+];
+
+const roadmapData = [
+  { 
+    project: 'AI Demand Forecasting', 
+    status: 'In Progress', 
+    completion: 75, 
+    deadline: 'Q1 2024',
+    priority: 'High'
+  },
+  { 
+    project: 'Warehouse Automation', 
+    status: 'Planning', 
+    completion: 25, 
+    deadline: 'Q2 2024',
+    priority: 'Medium'
+  },
+  { 
+    project: 'Supplier Portal Integration', 
+    status: 'Testing', 
+    completion: 90, 
+    deadline: 'Dec 2023',
+    priority: 'High'
+  },
+  { 
+    project: 'Carbon Footprint Tracking', 
+    status: 'Not Started', 
+    completion: 0, 
+    deadline: 'Q3 2024',
+    priority: 'Low'
+  }
 ];
 
 const MetricCard = ({ title, value, change, icon: Icon, trend = "up", description }: any) => (
@@ -179,6 +215,66 @@ const SupplyChainDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Project Roadmap */}
+      <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+        <CardHeader>
+          <CardTitle className="text-foreground flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Project Roadmap
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">
+            Strategic supply chain initiatives and milestones
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {roadmapData.map((project, index) => {
+              const getStatusIcon = (status: string) => {
+                switch (status) {
+                  case 'Completed': return <CheckCircle2 className="h-4 w-4 text-success" />;
+                  case 'In Progress': return <PlayCircle className="h-4 w-4 text-primary" />;
+                  case 'Testing': return <CircleDot className="h-4 w-4 text-warning" />;
+                  case 'Planning': return <Clock className="h-4 w-4 text-secondary" />;
+                  default: return <XCircle className="h-4 w-4 text-muted-foreground" />;
+                }
+              };
+
+              const getPriorityColor = (priority: string) => {
+                switch (priority) {
+                  case 'High': return 'text-danger';
+                  case 'Medium': return 'text-warning';
+                  default: return 'text-muted-foreground';
+                }
+              };
+
+              return (
+                <div key={index} className="border border-border/50 rounded-lg p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(project.status)}
+                      <h4 className="font-medium text-foreground">{project.project}</h4>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className={getPriorityColor(project.priority)}>
+                        {project.priority}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground">{project.deadline}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">{project.status}</span>
+                      <span className="text-foreground">{project.completion}%</span>
+                    </div>
+                    <Progress value={project.completion} className="h-2" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
